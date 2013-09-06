@@ -2,6 +2,7 @@ lifeFile = open('life.txt','r')
 
 i = 0 
 
+
 # get line count
 for line in lifeFile:
 
@@ -10,17 +11,28 @@ for line in lifeFile:
 		rowCols = line.split()
 		rows = rowCols[0]
 		cols = rowCols[1]
+		starPositionList = [[]] * rows
+		
 
+	# other lines
 	else :
+
+		starPositionList[i] = []
 
 		# check in range
 		if ( i < rows ):
+
 			j = 0
 
-			# find occurences of *
+			# for each character in line
 			for j in range(j,len(line)):
+
 				if(line[j] == '*') :
-					print j
+
+					#list of positions of stars
+					starPositionList[i].append(j)
 
 	# increment line count
 	i = i + 1
+
+print starPositionList
