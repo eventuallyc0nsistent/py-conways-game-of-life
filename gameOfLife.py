@@ -38,10 +38,10 @@ def getNeighbors(row,cell):
 
 	# get x and y co-ordinate
 	# add extra 1 for eliminating negatives
-	x = row
-	y = cell
+	x = row + 1
+	y = cell + 1
 
-	#create an empty list of 8 tuples
+	#create an empty list(neighbors) of 8 tuples
 	neighbors = [[] for i in range (8)]
 
 	# list for neighboring positions
