@@ -1,24 +1,22 @@
 lifeFile = open('life.txt','r')
 
 i = 0 
-
-
 # get line count
 for line in lifeFile:
 
-	# first line
+	# for first line with rows & cols count
 	if (i == 0) :
 		rowCols = line.split()
 		rows = rowCols[0]
 		cols = rowCols[1]
-		alivePositions = [[]] * int(rows)
+
+		# create empty list for each row
+		alivePositions = [[] for j in range (int(rows))]
 		
 
 	# other lines
 	else :
 		
-		alivePositions[i] = []
-
 		# check in range
 		if ( i < rows ):
 
@@ -29,7 +27,7 @@ for line in lifeFile:
 
 				if(line[j] == '*') :
 
-					#list of positions of stars
+					# append position of alive cell
 					alivePositions[i].append(j)
 
 	# increment line count
@@ -38,17 +36,19 @@ for line in lifeFile:
 # check the neighbors for cell
 def getNeighbors(row,cell):
 
-
 	# get x and y co-ordinate
+	# add extra 1 for eliminating negatives
 	x = row
 	y = cell
 
-	#create an empty list of 8 
+	#create an empty list of 8 tuples
 	neighbors = [[] for i in range (8)]
 
-	# list for [x,y]  position 	   [ [0,0] [0,1] [0,2] 
-	#		    			    	 [1,0] [1,1] [1,2]
-	# 					  	   	     [2,0] [2,1] [2,2] ]
+	# list for neighboring positions
+	# [ [x-1,y-1]		[x-1,y] 		[x-1,y+1] 
+	#   [x,y-1] 		[x,y] 			[x,y+1]
+	# 	[x+1,y-1] 		[x+1,1] 		[x+1,y+1] ]
+	
 	neighbors[0].append(x-1)
 	neighbors[0].append(y-1)
 
@@ -73,16 +73,14 @@ def getNeighbors(row,cell):
 	neighbors[7].append(x+1)
 	neighbors[7].append(y+1)
 
-	print 	neighbors
+	print neighbors
 
-print alivePositions
-
-i = 0
+lineNum = 0
 for row in alivePositions :
 	
 	for cell in row :
 		
-		#print "row"+str(i),cell
-		getNeighbors(i,cell)
+		#print "row"+str(lineNum),cell
+		getNeighbors(lineNum,cell)
 
-	i = i+1
+	lineNum = lineNum+1
