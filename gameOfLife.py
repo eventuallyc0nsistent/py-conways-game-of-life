@@ -11,7 +11,10 @@ for line in lifeFile:
 		cols = rowCols[1]
 
 		# create empty list for each row
-		alivePositions = [[] for j in range (int(rows))]
+		alivePositions 		 = [[] for j in range (int(rows))]
+
+		# create empty padded row to remove non negatives
+		alivePositionsPadded = [[] for j in range (int(rows) + 1 )]
 		
 
 	# other lines
@@ -38,49 +41,82 @@ def getNeighbors(row,cell):
 
 	# get x and y co-ordinate
 	# add extra 1 for eliminating negatives
-	x = row + 1
-	y = cell + 1
+	x = row
+	y = cell
+	print x,y
 
-	#create an empty list(neighbors) of 8 tuples
+	# alivePositions with padding
+	alivePositionsPadded[x].append(y)
+		
+	#create an empty list(neighbors) of 8 rows
 	neighbors = [[] for i in range (8)]
 
 	# list for neighboring positions
 	# [ [x-1,y-1]		[x-1,y] 		[x-1,y+1] 
 	#   [x,y-1] 		[x,y] 			[x,y+1]
-	# 	[x+1,y-1] 		[x+1,1] 		[x+1,y+1] ]
+	# 	[x+1,y-1] 		[x+1,y] 		[x+1,y+1] ]
 	
-	neighbors[0].append(x-1)
-	neighbors[0].append(y-1)
+	if (x-1 < 0) :
+		x = x+1
+	if (x+1 > 8):
+		x = x-1
 
-	neighbors[1].append(x-1)
-	neighbors[1].append(y)
+	if (y-1 < 0) :
+		y = y+1
+	if (y > 20):
+		y = y-1
 
-	neighbors[2].append(x-1)
-	neighbors[2].append(y+1)
+	#add to the corresponding row
+	neighbors[x-1].append(y-1)
+	neighbors[x-1].append(y)
+	neighbors[x-1].append(y+1)
 
-	neighbors[3].append(x)
-	neighbors[3].append(y-1)
+	neighbors[x].append(y-1)
+	neighbors[x].append(y+1)
 
-	neighbors[4].append(x)
-	neighbors[4].append(y+1)
+	neighbors[x+1].append(y-1)
+	neighbors[x+1].append(y)
+	neighbors[x+1].append(y+1)
 
-	neighbors[5].append(x+1)
-	neighbors[5].append(y-1)
+	return neighbors
 
-	neighbors[6].append(x+1)
-	neighbors[6].append(y)
+# get the list of neighbors that are alive
+def getAliveNeighbors(neighborsList,alivePositionsList):
+	
+	print "alive Positions : "+str(alivePositions)
 
-	neighbors[7].append(x+1)
-	neighbors[7].append(y+1)
+	print "neighbor Positions : "+str(neighborsList)
+	
+	aliveNeighbors = [ [] for i in range(8)]
+	print aliveNeighbors 
 
-	print neighbors
+	for row in range (0,len(alivePositionsList)):
+		
+		# for every cell in the alive Positions list
+		for aliveCell in alivePositionsList[row]:
+			
+			# check for every cell in neighbors list in the same row
+			for neighborCell in neighborsList[row]:
+				
+				if (aliveCell == neighborCell):
+
+					aliveNeighbors[row].append(neighborCell)
+					print "alive neighbors "+str(row)+ " : "+ str(aliveNeighbors)
+			
+		
+
+
+		
 
 lineNum = 0
+# print alivePositions
+
 for row in alivePositions :
 	
 	for cell in row :
 		
-		#print "row"+str(lineNum),cell
-		getNeighbors(lineNum,cell)
+		neighborsList = getNeighbors(lineNum,cell)
+		# print neighborsList
+		aliveNeighbors = getAliveNeighbors(neighborsList,alivePositions)
 
 	lineNum = lineNum+1
