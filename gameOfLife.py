@@ -13,8 +13,11 @@ for line in lifeFile:
 		# create empty list for each row
 		alivePositions 		 = [[] for j in range (int(rows))]
 
+		# create empty list of dead positions
+		deadPositions 		 = [[] for j in range (int(rows))]
+
 		# create empty padded row to remove non negatives
-		alivePositionsPadded = [[] for j in range (int(rows) + 1 )]
+		# alivePositionsPadded = [[] for j in range (int(rows) + 1 )]
 		
 
 	# other lines
@@ -33,6 +36,9 @@ for line in lifeFile:
 					# append position of alive cell
 					alivePositions[i].append(j)
 
+				else :
+					deadPositions[i].append(j)
+
 	# increment line count
 	i = i + 1
 
@@ -45,9 +51,6 @@ def getNeighbors(row,cell):
 	y = cell
 	print x,y
 
-	# alivePositions with padding
-	alivePositionsPadded[x].append(y)
-		
 	#create an empty list(neighbors) of 8 rows
 	neighbors = [[] for i in range (8)]
 
@@ -83,16 +86,15 @@ def getNeighbors(row,cell):
 # get the list of neighbors that are alive
 def getAliveNeighbors(neighborsList,alivePositionsList):
 	
-	print "alive Positions : "+str(alivePositions)
-
-	print "neighbor Positions : "+str(neighborsList)
+	# print "alive Positions : "+str(alivePositions)
+	# print "neighbor Positions : "+str(neighborsList)
 	
 	aliveNeighbors = [ [] for i in range(8)]
-	print aliveNeighbors 
+	countNeighbors = 0
 
 	for row in range (0,len(alivePositionsList)):
 		
-		# for every cell in the alive Positions list
+		# iterate through every cell in the alive Positions list
 		for aliveCell in alivePositionsList[row]:
 			
 			# check for every cell in neighbors list in the same row
@@ -100,8 +102,19 @@ def getAliveNeighbors(neighborsList,alivePositionsList):
 				
 				if (aliveCell == neighborCell):
 
+					# create a list of all the alive Neighboring cells or a cell
 					aliveNeighbors[row].append(neighborCell)
-					print "alive neighbors "+str(row)+ " : "+ str(aliveNeighbors)
+					countNeighbors += 1
+			
+					print "alive neighbors list : "+str(aliveNeighbors)
+			
+			print "Count of Neighbors :"+str(countNeighbors)
+
+			# if (len(aliveNeighbors) == 2 or len(aliveNeighbors) == 3) :
+			# 	return aliveNeighbors
+			# else :
+			# 	aliveNeighbors = []
+			# 	return aliveNeighbors
 			
 		
 
