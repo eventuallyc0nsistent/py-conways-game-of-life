@@ -7,18 +7,14 @@ for line in lifeFile:
 	# for first line with rows & cols count
 	if (i == 0) :
 		rowCols = line.split()
-		rows = rowCols[0]
-		cols = rowCols[1]
+		rows = int(rowCols[0])
+		cols = int(rowCols[1])
 
 		# create empty list for each row
-		alivePositions 		 = [[] for j in range (int(rows))]
+		alivePositions 		 = [[] for j in range (rows)]
 
 		# create empty list of dead positions
-		deadPositions 		 = [[] for j in range (int(rows))]
-
-		# create empty padded row to remove non negatives
-		# alivePositionsPadded = [[] for j in range (int(rows) + 1 )]
-		
+		deadPositions 		 = [[] for j in range (rows)]
 
 	# other lines
 	else :
@@ -36,17 +32,19 @@ for line in lifeFile:
 					# append position of alive cell
 					alivePositions[i].append(j)
 
-				else :
-					deadPositions[i].append(j)
 
 	# increment line count
 	i = i + 1
+
+aliveRowNum = 0
+
+# create a list of dead Positions
+rowNum = 0
 
 # check the neighbors for cell
 def getNeighbors(row,cell):
 
 	# get x and y co-ordinate
-	# add extra 1 for eliminating negatives
 	x = row
 	y = cell
 	print x,y
@@ -54,22 +52,11 @@ def getNeighbors(row,cell):
 	#create an empty list(neighbors) of 8 rows
 	neighbors = [[] for i in range (8)]
 
-	# list for neighboring positions
+	# grid for neighboring positions
 	# [ [x-1,y-1]		[x-1,y] 		[x-1,y+1] 
 	#   [x,y-1] 		[x,y] 			[x,y+1]
 	# 	[x+1,y-1] 		[x+1,y] 		[x+1,y+1] ]
 	
-	if (x-1 < 0) :
-		x = x+1
-	if (x+1 > 8):
-		x = x-1
-
-	if (y-1 < 0) :
-		y = y+1
-	if (y > 20):
-		y = y-1
-
-	#add to the corresponding row
 	neighbors[x-1].append(y-1)
 	neighbors[x-1].append(y)
 	neighbors[x-1].append(y+1)
@@ -84,42 +71,42 @@ def getNeighbors(row,cell):
 	return neighbors
 
 # get the list of neighbors that are alive
-def getAliveNeighbors(neighborsList,alivePositionsList):
+def getAliveNeighbors(neighborsList,alivePositionsList,rowNum):
 	
-	# print "alive Positions : "+str(alivePositions)
-	# print "neighbor Positions : "+str(neighborsList)
-	
-	aliveNeighbors = [ [] for i in range(8)]
-	countNeighbors = 0
+	print "neighbor Positions : "+str(neighborsList)
+	print "alive Positions : "+str(alivePositions)
+	print "row Number "+str(rowNum)
 
-	for row in range (0,len(alivePositionsList)):
+
+	aliveNeighbors = [ [] for i in range(len(alivePositionsList))]
+	countNeighbors = 0 # keep the count of neighbors for a cell
+	prevRow = 0
+	nextRow = 0
+
+	# check ALIVE neighbors in SAME row
+	for aliveCell in alivePositionsList[rowNum] :
 		
-		# iterate through every cell in the alive Positions list
-		for aliveCell in alivePositionsList[row]:
-			
-			# check for every cell in neighbors list in the same row
-			for neighborCell in neighborsList[row]:
-				
-				if (aliveCell == neighborCell):
+		if ((rowNum-1) < 0 ):
+			prevRow = rowNum+1
 
-					# create a list of all the alive Neighboring cells or a cell
-					aliveNeighbors[row].append(neighborCell)
-					countNeighbors += 1
-			
-					print "alive neighbors list : "+str(aliveNeighbors)
-			
-			print "Count of Neighbors :"+str(countNeighbors)
+		elif (rowNum+1 < rows ):
+			nextRow = rowNum-1
+		else :
+			prevRow = rowNum
+			nextRow = rowNum
 
-			# if (len(aliveNeighbors) == 2 or len(aliveNeighbors) == 3) :
-			# 	return aliveNeighbors
-			# else :
-			# 	aliveNeighbors = []
-			# 	return aliveNeighbors
+		# check for same row
+		for neighborCell in neighborsList[rowNum]:
 			
-		
+			if aliveCell == neighborCell :
+				aliveNeighbors[rowNum].append(aliveCell)
+
+		print "alive Neighbors in same row"+str(aliveNeighbors)
+
+	print "\n"
 
 
-		
+
 
 lineNum = 0
 # print alivePositions
@@ -128,8 +115,16 @@ for row in alivePositions :
 	
 	for cell in row :
 		
+		# generate list of neighbors that will be for a cell
 		neighborsList = getNeighbors(lineNum,cell)
-		# print neighborsList
-		aliveNeighbors = getAliveNeighbors(neighborsList,alivePositions)
+
+		# for the particular cell generate list of Neighbors that are alive
+		# by finding intersection between the neighbors it has 
+		# and the list of neighbors that are alive
+		
+		aliveNeighbors = getAliveNeighbors(neighborsList,alivePositions,lineNum)
+
+		# print aliveNeighbors
+
 
 	lineNum = lineNum+1
