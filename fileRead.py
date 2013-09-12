@@ -3,7 +3,7 @@ lifeFile = open('life.txt','r')
 # variable declarations
 i = 0 
 replacedFile = ""
-addSpace = ""
+addSpace = "" 
 
 # get line count
 for line in lifeFile:
@@ -21,12 +21,12 @@ for line in lifeFile:
 		if ( i < rows ):
 
 			replacedLine1 = line.replace(" ","-")
-			replacedLine2 = replacedLine1.replace("\n","-")
+			replacedLine2 = "-"+replacedLine1.replace("\n","-") #adding padding
 
 			lineLength = len(replacedLine2)
 
 			if(lineLength < cols):
-				addSpace = '-'*(cols-lineLength)
+				addSpace = '-'+('-'*(cols-lineLength))
 			
 			replacedLine = replacedLine2 + addSpace
 			replacedFile = replacedFile + replacedLine + "\n"
@@ -34,8 +34,11 @@ for line in lifeFile:
 	# increment line count
 	i = i + 1
 
+"""
+	add extra lines with padding 
+"""
 addExtraLine = ""
-addExtraLine = "-"*cols + "\n"
+addExtraLine = "-"*(cols+1) + "\n" 
 
 """ 
 	this is the final file with dashes and stars 
@@ -44,23 +47,25 @@ addExtraLine = "-"*cols + "\n"
 """
 replacedFile = addExtraLine  + replacedFile + addExtraLine + addExtraLine
 
-
-
-"""
-create a list of alivePositions & deadPositions
-"""
-alivePositions = [[] for j in range (rows)]
-deadPositions  = [[] for j in range (rows)]
-
+print replacedFile
 
 """
 spliting the lines in the replacedFile to a list
 """
 splitLines = replacedFile.splitlines()
 
+"""
+create a list of alivePositions & deadPositions
+"""
+alivePositions = [[] for j in range (len(splitLines))]
+deadPositions  = [[] for j in range (len(splitLines))]
+
+
+
 for i in range(len(splitLines)):
+
 	for cells in range(len(splitLines[i])):
-		
+
 		if (splitLines[i][cells] == "*"):
 			alivePositions[i].append(cells)
 
