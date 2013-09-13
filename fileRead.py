@@ -1,4 +1,4 @@
-lifeFile = open('sample.txt','r')
+lifeFile = open('life.txt','r')
 
 # variable declarations
 i = 0 
@@ -38,7 +38,6 @@ for line in lifeFile:
 """
 add extra blank lines in the end
 """
-
 splitLines = replacedFile.splitlines()
 
 for i in range(len(splitLines),rows):
@@ -49,7 +48,16 @@ for i in range(len(splitLines),rows):
 forming a GRID in 1 and 0
 """
 grid = [[] for j in range (len(splitLines))]
-emptyGrid = [[] for j in range (len(splitLines))]
+
+
+# default value set for all cols
+def getEmptyGrid():
+
+	
+	emptyGrid = [ [0]*cols for j in range (len(splitLines))]
+	return emptyGrid
+
+
 
 for i in range(len(splitLines)):
 
@@ -142,9 +150,11 @@ def willSustain(grid,emptyGrid):
 						countOfNeighbors += 1
 
 			if(countOfNeighbors == 2 or countOfNeighbors == 3):
-				emptyGrid[rowNum].append(1)
+				
+				emptyGrid[rowNum][colNum] = 1
+
 			else :
-				emptyGrid[rowNum].append(0)
+				emptyGrid[rowNum][colNum] = 0
 
 			colNum += 1
 		rowNum += 1
@@ -170,7 +180,7 @@ def willBloom(grid,emptyGrid):
 				neighbors = getNeighbors(rowNum,colNum,row)
 				
 				for tuple in neighbors:
-					
+
 					checkIsDead = isDead(tuple[0],tuple[1],grid)
 
 					if (checkIsDead):
@@ -178,29 +188,44 @@ def willBloom(grid,emptyGrid):
 					else :
 						countOfNeighbors += 1
 
-			if(countOfNeighbors == 3):
-				
-				emptyGrid[rowNum][colNum] = 1
-			else :
-				pass 
+				if(countOfNeighbors == 3):
+					
+					emptyGrid[rowNum][colNum] = 1
+
+				else :
+					pass 
 
 			colNum += 1
 		rowNum += 1
 
 	return emptyGrid
 
-#next Gen for all alive cells
-print replacedFile
-nextGen = willSustain(grid,emptyGrid)
-deadGen = willBloom(grid,nextGen)
+"""
+for 10 iterations
+"""
+for i in range(100):
+	#next Gen for all alive cells
+	emptyGrid = getEmptyGrid()
+	oneLine = ''
 
-"""
-	for the grid get neighbors
-"""
-rowNum = 0
-for row in grid:
-	colNum = 0
-	for colNum in range(cols) :
-		neighbors = getNeighbors(rowNum,colNum,row)
+	sustainGen = willSustain(grid,emptyGrid)
+	nextGen = willBloom(grid,sustainGen)
+
+	for row in nextGen:
+		for cell in row :
+			if cell == 0:
+				oneLine = oneLine+'-'
+			else :
+				oneLine = oneLine+'*'
 		
-	rowNum += 1
+		oneLine = oneLine + "\n"
+	
+	oneLine = oneLine +"============================================="+"\n"
+
+	grid = nextGen
+
+	with open("out.txt", "a") as myfile:
+    		myfile.write(oneLine)
+
+	
+
