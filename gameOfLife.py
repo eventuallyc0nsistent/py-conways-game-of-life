@@ -68,9 +68,10 @@ for i in range(len(splitLines)):
 
 		if (splitLines[i][cells] == "*"):
 			alivePositions[i].append(cells)
+			deadPositions[i].append('1')
 
 		if (splitLines[i][cells] == "-"):
-			deadPositions[i].append(cells)
+			deadPositions[i].append('0')
 
 
 """
@@ -100,10 +101,12 @@ def getNeighbors(row,cell):
 	neighbors[x+1].append(y-1)
 	neighbors[x+1].append(y)
 	neighbors[x+1].append(y+1)
-
+	
 	return neighbors
 
-# get the list of neighbors that are alive
+"""
+get the list of neighbors that are alive
+"""
 def getAliveNeighbors(neighborsList,alivePositionsList,rowNum):
 	
 	aliveNeighbors = [[] for j in range (len(splitLines))]
@@ -131,6 +134,20 @@ def getAliveNeighbors(neighborsList,alivePositionsList,rowNum):
 
 	return aliveNeighbors
 
+"""
+get list of the neighbors of the dead cells
+
+[x-1,y-1]		[x-1,y] 		[x-1,y+1] 
+ [x,y-1] 		 [x,y] 			 [x,y+1]
+[x+1,y-1] 		[x+1,y] 		[x+1,y+1]
+
+"""
+
+
+"""
+A living cell with two or three neighboring living cells survives into the next generation.
+A living cell with fewer than two or more than three living neighbors will die.
+"""
 def isAlive(aliveNeighbors):
 	count = 0 
 	for row in aliveNeighbors:
@@ -147,22 +164,22 @@ def isAlive(aliveNeighbors):
 """
 for every cell in the alivePositions list check aliveNeighbors
 """
-lineNum = 0
-nextGenList = [[] for j in range (len(splitLines))]
+aliveLineNum = 0
+nextGenAliveList = [[] for j in range (len(splitLines))]
 
 for row in alivePositions :
 	
 	for cell in row :
 		
 		# generate list of neighbors that will be for a cell
-		neighborsList = getNeighbors(lineNum,cell)
+		neighborsList = getNeighbors(aliveLineNum,cell)
 		
 		"""
 		for the particular cell generate list of Neighbors that are alive
 		by finding intersection between the neighbors it has 
 		and the list of neighbors that are alive
 		"""
-		aliveNeighbors = getAliveNeighbors(neighborsList,alivePositions,lineNum)
+		aliveNeighbors = getAliveNeighbors(neighborsList,alivePositions,aliveLineNum)
 
 		"""
 		for each cell check if it will be alive
@@ -171,6 +188,51 @@ for row in alivePositions :
 		isAliveStatus = isAlive(aliveNeighbors)
 		
 		if(isAliveStatus):
-			nextGenList[lineNum].append(cell)
-		print nextGenList
-	lineNum = lineNum+1
+			nextGenAliveList[aliveLineNum].append(cell)
+
+	aliveLineNum = aliveLineNum+1
+
+"""
+	for every cell in deadPositions list get neighbors
+"""
+def isDead(x,y,listName):
+	if (listName[int(x)][int(y)] == '0') :
+		return True
+	else :
+		return False
+
+
+def getNeighborsListXY(x,y):
+	listXY = []
+	neighborsList = getNeighbors(int(x),int(y))
+	
+	rowNum = 0
+	for row in neighborsList :
+		for cell in row :
+			if(cell):
+				listXY.append((rowNum,cell))
+
+		rowNum += 1
+
+	return listXY
+
+modRowNum = 0
+print deadPositions
+for row in deadPositions :
+	
+	if(modRowNum == 0):
+		pass 
+	else:
+		for col in row:
+
+			if (isDead(modRowNum,col,deadPositions)) :
+				try :
+					neighbors = getNeighborsListXY(modRowNum,col)
+					
+				except IndexError:
+					pass
+
+	modRowNum += 1
+
+print "----"
+print alivePositions
