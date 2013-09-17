@@ -203,7 +203,8 @@ def willBloom(grid,emptyGrid):
 """
 for 10 iterations
 """
-for i in range(100):
+for i in range(10):
+
 	#next Gen for all alive cells
 	emptyGrid = getEmptyGrid()
 	oneLine = ''
