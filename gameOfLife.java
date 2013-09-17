@@ -51,12 +51,20 @@ public class gameOfLife
 			}
 			else 
 			{
-			
+				/*
+				for every row create an array of the 'stars' and 'spaces'				
+				 */
 				rowArray[i] = lineArray[i].split("");
-				for (int j ; j < rowArray[i].length ; j++)
+				for (int j ; j < colsCount ; j++)
 				{
-					rowArray[i][j] = "";
-					System.out.println(rowArray[i][j]);
+					if(rowArray[i][j] == "*")
+					{
+						System.out.println(rowArray[i][j]);
+					}
+					else
+					{
+						System.out.println("-");
+					}
 				}
 				
 			}
