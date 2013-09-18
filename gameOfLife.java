@@ -1,7 +1,6 @@
 import java.io.File ;
 import java.util.Scanner ;
 import java.util.ArrayList ;
-import java.util.Arrays;
 
 public class gameOfLife
 {
@@ -21,7 +20,6 @@ public class gameOfLife
 
 		ArrayList<String> lines = new ArrayList<String>();
 		Scanner scan = new Scanner(new File(fileName));
-		scan.useDelimiter("");
 
 		while(scan.hasNextLine())
 		{
@@ -30,45 +28,70 @@ public class gameOfLife
 		}
 		
 		int rowsCount = 0;
-		int colsCount = 0;
-		String[][] rowArray;
-		String[] lineArray = new String[lines.size()];
+        int colsCount = 0;
+        String[] lineArray = new String[lines.size()];
 
-		// convert ArrayList to Array of defined size
-		lines.toArray(lineArray);
+        // convert ArrayList to Array of defined size
+        lines.toArray(lineArray);
 
-		for(int i=0;i < lineArray.length ; i++)
-		{
+        // We will use pass this gameState throughout the program.
+        ArrayList<ArrayList<Boolean>> gameState = null;
 
-			// first line input
-			if(i == 0)
-			{
+        boolean notFirstTime = false;
 
-				String[] rowsColsCount = lineArray[i].split(" ");
-				rowsCount = Integer.parseInt(rowsColsCount[0]);
-				colsCount = Integer.parseInt(rowsColsCount[1]);
-			
-			}
-			else 
-			{
-				/*
-				for every row create an array of the 'stars' and 'spaces'				
-				 */
-				rowArray[i] = lineArray[i].split("");
-				for (int j ; j < colsCount ; j++)
-				{
-					if(rowArray[i][j] == "*")
-					{
-						System.out.println(rowArray[i][j]);
-					}
-					else
-					{
-						System.out.println("-");
-					}
-				}
-				
-			}
-		}
+        for(String line:lines){
+            //Compiler designed to predict if values as true. call it pre-optimization babes. :)
+            if(!notFirstTime){
+                String[] rowColsCount = line.split(" ");
+                rowsCount = Integer.parseInt(rowColsCount[0]);
+                colsCount = Integer.parseInt(rowColsCount[1]);
+                
+                //We pass the rowsCount to the constructor of the arraylist
+                gameState = new ArrayList<ArrayList<Boolean>>(rowsCount);
+                notFirstTime = true;
+            }
+            else{
+                String[] splitLineArray = line.split("");
+                ArrayList<Boolean> tempArray = new ArrayList<Boolean>(colsCount);
+                
+                for (int j= 0 ; j<colsCount; j++){
+                    
+                    try {
+	                    if(splitLineArray[j]=="*"){
+	                        tempArray.add(j,true);
+	                        System.out.println(tempArray.get(j));
+	                    }
+	                    else{
+	                        tempArray.add(j,false);
+	                        System.out.println(tempArray.get(j));
+	                    }
+                    }
+                    catch (ArrayIndexOutOfBoundsException e)
+                    {
+                    	tempArray.add(j,false);
+                    	System.out.println(tempArray.get(j));
+                    }
+
+                }
+            }
+        }
+
+        //Now to print the gameState
+         for(ArrayList<Boolean> tempList: gameState){
+             
+             StringBuffer buffer = new StringBuffer();
+             for(int i = 0 ; i<tempList.size();i++){
+                 if(tempList.get(i)==true){
+                     buffer.append("*");
+                 }
+                 else{
+                    buffer.append("-");
+                 }
+             }
+             
+             /*Prints each row in a line. in the prevous way in which you had done, it would print to a new line for every co-ordinate. Println prints to a new line*/
+             System.out.println(buffer);
+         }
 
 	}
 
