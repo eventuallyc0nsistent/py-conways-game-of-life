@@ -1,6 +1,7 @@
 import java.io.File ;
 import java.util.Scanner ;
 import java.util.ArrayList ;
+import java.util.Arrays;
 
 public class gameOfLife
 {
@@ -40,8 +41,10 @@ public class gameOfLife
         boolean notFirstTime = false;
 
         for(String line:lines){
+           
             //Compiler designed to predict if values as true. call it pre-optimization babes. :)
             if(!notFirstTime){
+
                 String[] rowColsCount = line.split(" ");
                 rowsCount = Integer.parseInt(rowColsCount[0]);
                 colsCount = Integer.parseInt(rowColsCount[1]);
@@ -52,19 +55,24 @@ public class gameOfLife
             }
             else{
                 String[] splitLineArray = line.split("");
+
                 ArrayList<Boolean> tempArray = new ArrayList<Boolean>(colsCount);
                 
                 for (int j= 0 ; j<colsCount; j++){
                     
                     try {
-	                    if(splitLineArray[j]=="*"){
+
+	                    if(splitLineArray[j].equals("*")){
 	                        tempArray.add(j,true);
+	                        System.out.println("has to be true");
 	                        System.out.println(tempArray.get(j));
 	                    }
 	                    else{
 	                        tempArray.add(j,false);
+	                        System.out.println("has to be false");
 	                        System.out.println(tempArray.get(j));
 	                    }
+
                     }
                     catch (ArrayIndexOutOfBoundsException e)
                     {
