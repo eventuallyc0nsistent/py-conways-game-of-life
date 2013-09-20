@@ -8,14 +8,16 @@ public class gameOfLife
 	public static void main(String[] args)
 		throws java.io.FileNotFoundException
 	{
-		readFile("life.txt");
+		ArrayList<ArrayList<Boolean>> gameState = readFile("life.txt");
+        ArrayList<int[]> neighbors = getNeighbors(2,3);
+        
 	}
 
 
 	/*--
 	Reading the input file
 	--*/
-	static void readFile(String fileName)
+	public static ArrayList<ArrayList<Boolean>> readFile(String fileName)
 		throws java.io.FileNotFoundException
 	{
 
@@ -23,11 +25,10 @@ public class gameOfLife
 		Scanner scan = new Scanner(new File(fileName));
 
 		while(scan.hasNextLine())
-		{
 			lines.add(scan.nextLine());
-			
-		}
 		
+        scan.close();
+
 		int rowsCount = 0;
         int colsCount = 0;
         String[] lineArray = new String[lines.size()];
@@ -40,9 +41,9 @@ public class gameOfLife
 
         boolean notFirstTime = false;
 
-        for(String line:lines){
-           
-            //Compiler designed to predict if values as true. call it pre-optimization babes. :)
+        for(String line:lines)
+        {
+            //check if its the First Line
             if(!notFirstTime){
 
                 String[] rowColsCount = line.split(" ");
@@ -53,54 +54,80 @@ public class gameOfLife
                 gameState = new ArrayList<ArrayList<Boolean>>(rowsCount);
                 notFirstTime = true;
             }
-            else{
+            else
+            {
                 String[] splitLineArray = line.split("");
 
                 ArrayList<Boolean> tempArray = new ArrayList<Boolean>(colsCount);
                 
-                for (int j= 0 ; j<colsCount; j++){
-                    
+                for (int j= 0 ; j<colsCount; j++)
+                {
                     try {
 
-	                    if(splitLineArray[j].equals("*")){
-	                        tempArray.add(j,true);
-	                        System.out.println("has to be true");
-	                        System.out.println(tempArray.get(j));
-	                    }
-	                    else{
-	                        tempArray.add(j,false);
-	                        System.out.println("has to be false");
-	                        System.out.println(tempArray.get(j));
-	                    }
-
-                    }
+	                    if(splitLineArray[j].equals("*"))
+                            tempArray.add(j,true);
+	                    else
+                            tempArray.add(j,false);
+	                }
                     catch (ArrayIndexOutOfBoundsException e)
                     {
                     	tempArray.add(j,false);
-                    	System.out.println(tempArray.get(j));
                     }
-
                 }
+                gameState.add(tempArray);
             }
-        }
 
-        //Now to print the gameState
-         for(ArrayList<Boolean> tempList: gameState){
-             
-             StringBuffer buffer = new StringBuffer();
-             for(int i = 0 ; i<tempList.size();i++){
-                 if(tempList.get(i)==true){
-                     buffer.append("*");
-                 }
-                 else{
-                    buffer.append("-");
-                 }
-             }
-             
-             /*Prints each row in a line. in the prevous way in which you had done, it would print to a new line for every co-ordinate. Println prints to a new line*/
-             System.out.println(buffer);
-         }
+        } 
+
+      return gameState;
 
 	}
+
+    // create the list of neighbors for points with x & y co-ordinates
+    // {x-1,y-1}       {x-1,y}         {x-1,y+1} 
+    //  {x,y-1}         {x,y}           {x,y+1}
+    // {x+1,y-1}       {x+1,y}         {x+1,y+1}
+   public static ArrayList<int[]> getNeighbors(int x, int y)
+   {
+        ArrayList<int[]> neighbors = new ArrayList<int[]>();
+
+        int[] tempArray1 = {x-1,y-1};
+        int[] tempArray2 = {x-1,y};
+        int[] tempArray3 = {x-1,y+1};
+
+        int[] tempArray4 = {x,y-1};
+        int[] tempArray5 = {x,y+1};
+
+        int[] tempArray6 = {x+1,y-1};
+        int[] tempArray7 = {x+1,y};
+        int[] tempArray8 = {x+1,y+1};
+
+        if(x-1 > 0 && y-1 > 0)
+            neighbors.add(tempArray1);
+
+        if(x-1>0)
+        {
+            neighbors.add(tempArray2);
+            neighbors.add(tempArray3);
+        }
+
+        if(y-1>0)
+        {
+            neighbors.add(tempArray4);
+            neighbors.add(tempArray6);
+        }
+        
+        neighbors.add(tempArray5);
+        neighbors.add(tempArray7);
+        neighbors.add(tempArray8);
+
+        return neighbors;
+
+    }
+
+    public static ArrayList<Boolean> isAlive(int x,int y,ArrayList<ArrayList<Boolean>> gameState)
+    {
+        
+    }
 
 }
