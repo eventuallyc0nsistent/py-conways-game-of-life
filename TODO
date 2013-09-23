@@ -1,6 +1,0 @@
-Game of Life :
-  ✔ get position of stars @done (13-09-07 16:42)
-  ☐ Neighbors
-      ✔ positions of neighboring cells @done (13-09-07 22:14)
-      ☐ get alive
-      ☐ get dead

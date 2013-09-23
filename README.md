@@ -1,5 +1,5 @@
-Conways game of life in python
-==============================
+Conways game of life in python and Java
+=======================================
 
 __The rules of life say:__
 

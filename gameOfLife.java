@@ -6,48 +6,61 @@ public class gameOfLife
     public static int rowsCount = 0;
     public static int colsCount = 0;
 
-	public static void main(String[] args)
-		throws java.io.FileNotFoundException
-	{  
+    public static void main(String[] args)
+        throws java.io.FileNotFoundException
+    {  
+        int iterations;
 
-        //global list of alive Positions
-		ArrayList<ArrayList<Boolean>> gameState = readFile("life.txt");
-        
-
+        if(args.length == 0)
+           iterations = 10;
+        else
+           iterations = Integer.parseInt(args[0]);
+       
+        ArrayList<ArrayList<Boolean>> gameState = readFile("life.txt");
         ArrayList<int[]> alivePositions = alivePositions(gameState);
         ArrayList<int[]> deadPositions  = deadPositions(gameState);
         ArrayList<int[]> willSustain  = willSustain(alivePositions,gameState);
-
-
         ArrayList<int[]> willFlourish = willFlourish(deadPositions,gameState);
         ArrayList<ArrayList<Boolean>> emptyGrid = emptyGrid();
         ArrayList<ArrayList<Boolean>> nextGen = setNextGen(emptyGrid,willSustain);
-
         ArrayList<ArrayList<Boolean>> newNextGen = setNextGen(nextGen,willFlourish);  
+        printStates(newNextGen);
+
+        for(int i = 0 ; i < iterations-1 ; i++ )
+        {
+            alivePositions = alivePositions(newNextGen);
+            deadPositions  = deadPositions(newNextGen);
+            willSustain  = willSustain(alivePositions,newNextGen);
 
 
-        
+            willFlourish = willFlourish(deadPositions,newNextGen);
+            emptyGrid = emptyGrid();
+            nextGen = setNextGen(emptyGrid,willSustain);
+
+            newNextGen = setNextGen(nextGen,willFlourish);  
+            printStates(newNextGen);
+        }
 
     }
 
 
-	/*--
-	Reading the input file : life.txt
+    /*--
+    Reading the input file : life.txt
     @param : fileName
     @return : gameState which consists of the array list of positions
-	--*/
-	public static ArrayList<ArrayList<Boolean>> readFile(String fileName)
-		throws java.io.FileNotFoundException
-	{
+    --*/
+    public static ArrayList<ArrayList<Boolean>> readFile(String fileName)
+        throws java.io.FileNotFoundException
+    {
 
-		ArrayList<String> lines = new ArrayList<String>();
-		Scanner scan = new Scanner(new File(fileName));
+        ArrayList<String> lines = new ArrayList<String>();
+        Scanner scan = new Scanner(new File(fileName));
 
-		while(scan.hasNextLine())
-			lines.add(scan.nextLine());
-		
+        while(scan.hasNextLine())
+            lines.add(scan.nextLine());
+        
         scan.close();
-		
+        
         String[] lineArray = new String[lines.size()];
 
         // convert ArrayList to Array of defined size
@@ -87,16 +100,16 @@ public class gameOfLife
                 { 
                     try {
 
-	                    if(splitLineArray[j].equals("*")) {
+                        if(splitLineArray[j].equals("*")) {
                             tempArray.add(j-1,true);
                             
                         }
-	                    else
+                        else
                             tempArray.add(j-1,false);
-	                }
+                    }
                     catch (ArrayIndexOutOfBoundsException e)
                     {
-                    	tempArray.add(j-1,false);
+                        tempArray.add(j-1,false);
                     }
                 }
                 gameState.add(tempArray);
@@ -109,6 +122,7 @@ public class gameOfLife
 
         /* 
             if the size of the rows are less than the ones 
+            then add extra empty rows to our game
         */
         while(gameState.size() < rowsCount )
         {
@@ -122,59 +136,65 @@ public class gameOfLife
         } 
 
       return gameState;
+    }
 
-	}
-
+    
     /*  
     create the list of neighbors for points with x & y co-ordinates
         {x-1,y-1}       {x-1,y}         {x-1,y+1} 
          {x,y-1}         {x,y}           {x,y+1}
         {x+1,y-1}       {x+1,y}         {x+1,y+1}
+
+    @param : the x and y co-ordinates of the cell
+    @return : a list of neighbors
     */
    public static ArrayList<int[]> getNeighbors(int x, int y)
    {
         ArrayList<int[]> neighbors = new ArrayList<int[]>();
 
-        int[] tempArray1 = {x-1,y-1};
-        int[] tempArray2 = {x-1,y};
-        int[] tempArray3 = {x-1,y+1};
+        int[] position1 = {x-1,y-1};
+        int[] position2 = {x-1,y};
+        int[] position3 = {x-1,y+1};
 
-        int[] tempArray4 = {x,y-1};
-        int[] tempArray5 = {x,y+1};
+        int[] position4 = {x,y-1};
+        int[] position5 = {x,y+1};
 
-        int[] tempArray6 = {x+1,y-1};
-        int[] tempArray7 = {x+1,y};
-        int[] tempArray8 = {x+1,y+1};
+        int[] position6 = {x+1,y-1};
+        int[] position7 = {x+1,y};
+        int[] position8 = {x+1,y+1};
 
         if(x-1 >= 0 && y-1 >= 0)
-            neighbors.add(tempArray1); 
+            neighbors.add(position1); 
 
         if(x-1>=0)
-            neighbors.add(tempArray2);
+            neighbors.add(position2);
 
         if(x-1>=0 && y+1 <colsCount)
-            neighbors.add(tempArray3);
+            neighbors.add(position3);
 
         if(y-1>=0)
-            neighbors.add(tempArray4);
+            neighbors.add(position4);
 
         if(y+1 < colsCount)
-            neighbors.add(tempArray5);
+            neighbors.add(position5);
 
         if(x+1 < rowsCount && y-1>=0)
-            neighbors.add(tempArray6);
+            neighbors.add(position6);
         
         if(x+1 < rowsCount)
-            neighbors.add(tempArray7);
+            neighbors.add(position7);
 
         if(x+1 < rowsCount && y+1 < colsCount)
-            neighbors.add(tempArray8);
+            neighbors.add(position8);
 
         return neighbors;
-
     }
 
-    // check if the cell is alive in the game list
+    /*
+        check if the cell is alive in the original gameState list
+        if alive return Boolean
+
+     */ 
     public static Boolean isAlive(int x,int y,ArrayList<ArrayList<Boolean>> gameState)
     {
         if( gameState.get(x).get(y) )
@@ -185,10 +205,13 @@ public class gameOfLife
         {
             return false;
         }
-        
     }
 
-    // create a list of alivePositions in the gameState
+    /*
+        create a list of alivePositions in the gameState
+        @param : The original gameState list
+        @return : the list of positions alive in an arrayList tuple e.g. : [{1,2}{2,3}]
+     */ 
     public static ArrayList<int[]> alivePositions(ArrayList<ArrayList<Boolean>> gameState)
     {
         int rowNumber = 0;
@@ -213,7 +236,11 @@ public class gameOfLife
         return alivePositions;
     }
 
-    // create a list of deadPositions in the gameState
+    /*
+        create a list of deadPositions in the gameState
+        @param : The original gameState list
+        @return : the list of positions dead in an arrayList tuple e.g. : [{1,2}{2,3}]
+     */
     public static ArrayList<int[]> deadPositions(ArrayList<ArrayList<Boolean>> gameState)
     {
         int rowNumber = 0;
@@ -275,13 +302,12 @@ public class gameOfLife
         }
 
         return willSustain;
-        
     }
 
      /* 
     this will give a list of dead cells that will stay alive for the next generation
     @param : the list of dead Positions in the current game State list
-    @return : the list of elements that will flourish for the next generation
+    @return : the list of elements that will stay alive for the next generation
     */ 
     public static ArrayList<int[]> willFlourish(ArrayList<int[]> deadPositions,ArrayList<ArrayList<Boolean>> gameState)
     {
@@ -339,6 +365,11 @@ public class gameOfLife
         return emptyGrid;
     }
 
+    /*
+        for the given grid set the variables to true or false for the next generation
+        @param : the grid of positions with true-false set . the list of positions that you would want to set to true for the next generation
+        @return : the grid that is formed from the list
+     */
     public static ArrayList<ArrayList<Boolean>>  setNextGen(ArrayList<ArrayList<Boolean>> grid,ArrayList<int[]> givenArrayList)
     {   
         for(int[] cordo : givenArrayList)
@@ -349,6 +380,32 @@ public class gameOfLife
 
         return grid;
         
+    }
+
+    public static void printStates(ArrayList<ArrayList<Boolean>> gameState)
+    {
+        for(ArrayList<Boolean> row: gameState)
+         {
+             
+            StringBuffer buffer = new StringBuffer();
+            for(int i = 0 ; i<row.size();i++)
+             {
+                 if(row.get(i)==true)
+                 {
+                     buffer.append("*");
+                 }
+                 else
+                 {
+                    buffer.append("-");
+                 }
+            }
+
+            System.out.println(buffer.toString());
+            System.out.println();
+            
+         }
+
+        System.out.println("===========================");
     }
 
 
